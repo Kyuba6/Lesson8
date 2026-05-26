@@ -1,10 +1,14 @@
-from pydantic import BaseModel
-from typing import Dict, List
+"""Pydantic models for apartments, tenants, transfers and bills."""
 
 import json
+from typing import Dict, List
+
+from pydantic import BaseModel
+
 
 
 class Parameters(BaseModel):
+    """Configuration and file paths for data sources."""
     apartments_json_path: str = 'data/apartments.json'
     tenants_json_path: str = 'data/tenants.json'
     transfers_json_path: str = 'data/transfers.json'
@@ -29,8 +33,9 @@ class Apartment(BaseModel):
 
     @staticmethod
     def from_json_file(file_path: str) -> Dict[str,'Apartment']:
+        """Load apartments from a JSON file into a dict keyed by apartment key."""
         data = None
-        with open(file_path, 'r') as file:
+        with open(file_path, 'r', encoding="utf-8") as file:
             data = json.load(file)
         assert isinstance(data, dict), "Expected a dictionary of apartments"
         return {key: Apartment(**apartment) for key, apartment in data.items()}
@@ -136,3 +141,4 @@ class ApartmentEvent(BaseModel):
             data = json.load(file)
         assert isinstance(data, list), "Expected a list of apartment events"
         return [ApartmentEvent(**event) for event in data]
+    
